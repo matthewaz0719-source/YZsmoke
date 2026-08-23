@@ -280,21 +280,57 @@
   .detailContent{ background:var(--card); border-radius:10px; padding:14px; color:var(--text-2); font-size:13px; line-height:1.75; }
   .detailContent strong{ color:var(--text); }
 
+  /* LOGO AS HOME BUTTON */
+  .logoBtn{ background:none; border:none; cursor:pointer; padding:0; font-family:'Space Grotesk','Inter',sans-serif; }
+
+  /* MOBILE CIRCLE NAV (hidden on desktop) */
+  .mobileCircleNav{ display:none; }
+  .circleNavBtn{
+    background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center;
+    gap:6px; color:var(--text-2); font-size:10.5px; font-family:inherit;
+  }
+  .circleIcon{
+    width:46px; height:46px; border-radius:50%; border:2px solid var(--accent);
+    background:var(--card); color:var(--accent-2); display:flex; align-items:center; justify-content:center;
+    font-size:19px; transition:background .15s, transform .15s;
+  }
+  .circleNavBtn:active .circleIcon{ background:var(--accent-glow); transform:scale(.94); }
+
+  /* IMAGE LIGHTBOX */
+  .lightboxOverlay{ background:rgba(0,0,0,.94); align-items:center; padding:0; z-index:120; }
+  .lightboxTrack{ display:flex; width:100%; height:100%; transition:transform .3s ease; touch-action:pan-y; }
+  .lightboxTrack .lightboxSlide{ min-width:100%; height:100%; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .lightboxTrack img{ max-width:94vw; max-height:86vh; object-fit:contain; }
+  .lightboxNavBtn{ z-index:130; }
+  #lightboxDots{ z-index:130; }
+  .pmGallery{ cursor:zoom-in; }
+
+  /* ADMIN ORDER PRIORITY */
+  .orderRow.pending{ border-left:3px solid var(--danger); background:rgba(226,96,74,.08); padding-left:10px; }
+  .orderPendingBadge{
+    background:var(--danger); color:#fff; font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px;
+    text-transform:uppercase; letter-spacing:.5px; margin-left:8px; vertical-align:middle;
+  }
+  .orderDoneBadge{
+    background:var(--card); color:var(--text-2); font-size:9px; font-weight:600; padding:2px 8px; border-radius:100px;
+    text-transform:uppercase; letter-spacing:.5px; margin-left:8px; vertical-align:middle; border:1px solid var(--border);
+  }
+  .btnMarkDone{ background:var(--accent) !important; color:#1a1204 !important; border:none !important; padding:6px 12px !important; font-size:11.5px !important; font-weight:700 !important; }
+  .ordersDoneHeader{ font-size:12px; color:var(--text-3); margin:18px 0 6px; text-transform:uppercase; letter-spacing:.5px; }
+
   /* ===== MOBILE RESPONSIVE ===== */
   @media (max-width: 700px){
     header{
-      padding:12px 4.5vw; flex-wrap:wrap; row-gap:10px;
+      padding:12px 4.5vw; justify-content:center;
     }
-    .logo{ font-size:16px; letter-spacing:2px; }
+    .logo{ font-size:17px; letter-spacing:2px; }
     header > div{ gap:10px !important; }
-    nav{
-      order:3; width:100%; display:flex; justify-content:center; gap:16px; margin-top:4px;
-    }
-    nav a{ margin-left:0; font-size:12.5px; }
+    nav{ display:none; }
+    .mobileCircleNav{ display:flex; justify-content:center; gap:26px; padding:12px 4vw 6px; }
     .searchBtn{ width:34px; height:34px; font-size:14px; }
     .cartBtn{ padding:8px 11px; font-size:12px; }
 
-    .hero{ padding:60px 5vw 44px; }
+    .hero{ padding:50px 5vw 40px; }
     .hero .eyebrow{ font-size:10.5px; padding:5px 12px; margin-bottom:14px; }
     .hero h1{ font-size:clamp(26px,7.5vw,34px); margin-bottom:12px; }
     .hero p{ font-size:14px; margin-bottom:24px; }
@@ -302,16 +338,17 @@
 
     .warning-bar{ font-size:10.5px; padding:9px 4.5vw; }
 
-    .section{ padding:44px 4.5vw; }
+    .section{ padding:34px 4.5vw; }
     .section h2{ font-size:21px; }
-    .section .sub{ font-size:12.5px; margin-bottom:24px; }
+    .section .sub{ font-size:12.5px; margin-bottom:20px; }
 
-    .grid{ grid-template-columns:repeat(auto-fill, minmax(148px,1fr)); gap:12px; }
+    .grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
     .pcard .img{ height:120px; font-size:30px; }
     .pcard .body{ padding:12px; }
     .pcard h3{ font-size:14px; }
     .pcard .desc{ font-size:11.5px; margin-bottom:10px; }
-    .pcard .price{ font-size:15px; }
+    .pcard .price{ font-size:14px; }
+    .pcard .oldPrice{ display:block; margin-left:0; margin-top:2px; }
     .pcard .viewBtn{ padding:8px; font-size:12px; margin-top:8px; }
     .offerBadge{ font-size:9px; padding:3px 8px; top:7px; left:7px; }
 
@@ -346,7 +383,7 @@
     .pmBody h2{ font-size:19px; }
     .pmPrice{ font-size:18px; }
     .pmRecommend{ padding:0 18px 18px; }
-    .pmRecommend .grid{ grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; }
+    .pmRecommend .grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
     .checkoutBox, .detailBox{ padding:18px; }
 
     #searchOverlay{ padding:56px 12px 12px; }
@@ -354,10 +391,13 @@
 
     #cartDrawer{ width:100vw; }
     .cartHead, .cartItems, .cartFoot{ padding-left:16px; padding-right:16px; }
+
+    .lightboxNavBtn{ width:38px; height:38px; }
+    .lightboxNavBtn.prev{ left:6px; } .lightboxNavBtn.next{ right:6px; }
   }
 
   @media (max-width: 400px){
-    .grid{ grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); }
+    .grid{ grid-template-columns:repeat(2, 1fr); }
     .hero h1{ font-size:24px; }
   }
 </style>
@@ -380,7 +420,7 @@
 <div id="siteContent" style="display:none;">
 
 <header>
-  <div class="logo">YZ<span>SMOKE</span></div>
+  <button class="logo logoBtn" id="logoHomeBtn">YZ<span>SMOKE</span></button>
   <div style="display:flex; align-items:center; gap:24px;">
     <nav>
       <a href="#ofertas" onclick="goHome(); scrollToSection('ofertas'); return false;">Mejores ofertas</a>
@@ -393,6 +433,19 @@
     </button>
   </div>
 </header>
+
+<div class="mobileCircleNav" id="mobileCircleNav">
+  <button class="circleNavBtn" id="circleOfertas">
+    <span class="circleIcon">🔥</span><span class="circleLabel">Ofertas</span>
+  </button>
+  <button class="circleNavBtn" id="circleCatalogo">
+    <span class="circleIcon">🗂️</span><span class="circleLabel">Catálogo</span>
+  </button>
+  <button class="circleNavBtn" id="circleContacto">
+    <span class="circleIcon">✉️</span><span class="circleLabel">Contacto</span>
+  </button>
+</div>
+
 
 <div id="homeView">
 <section class="hero">
@@ -550,6 +603,14 @@
       <div class="grid" id="pmRecommendGrid"></div>
     </div>
   </div>
+</div>
+
+<div id="imageLightbox" class="modalOverlay lightboxOverlay">
+  <button class="modalCloseBtn" id="lightboxClose">×</button>
+  <div class="lightboxTrack" id="lightboxTrack"></div>
+  <button class="pmGalleryNav prev lightboxNavBtn" id="lightboxPrev">‹</button>
+  <button class="pmGalleryNav next lightboxNavBtn" id="lightboxNext">›</button>
+  <div class="pmGalleryDots" id="lightboxDots"></div>
 </div>
 
 <div id="checkoutModal" class="modalOverlay">
@@ -825,6 +886,21 @@ function goHome(){
 window.showCatalog = showCatalog;
 window.goHome = goHome;
 
+document.getElementById('logoHomeBtn').addEventListener('click', () => {
+  goHome();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('circleOfertas').addEventListener('click', () => {
+  goHome();
+  scrollToSection('ofertas');
+});
+document.getElementById('circleCatalogo').addEventListener('click', () => {
+  showCatalog();
+});
+document.getElementById('circleContacto').addEventListener('click', () => {
+  scrollToSection('footer');
+});
+
 function openProductModal(id, keepGalleryIndex){
   const p = products.find(x => x.id === id);
   if(!p) return;
@@ -832,6 +908,7 @@ function openProductModal(id, keepGalleryIndex){
   if(!keepGalleryIndex) pmGalleryIndex = 0;
 
   const images = (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []);
+  currentModalImages = images;
   const track = document.getElementById('pmGalleryTrack');
   const dots = document.getElementById('pmGalleryDots');
   const prevBtn = document.getElementById('pmGalleryPrev');
@@ -845,6 +922,9 @@ function openProductModal(id, keepGalleryIndex){
     dots.innerHTML = images.map((_, i) => `<button data-i="${i}" class="${i === pmGalleryIndex ? 'active' : ''}"></button>`).join('');
     dots.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => { pmGalleryIndex = parseInt(btn.dataset.i); updatePmGallery(); });
+    });
+    track.querySelectorAll('img').forEach((img, i) => {
+      img.addEventListener('click', (e) => { e.stopPropagation(); openLightbox(images, i); });
     });
   }
   prevBtn.style.display = images.length > 1 ? 'flex' : 'none';
@@ -917,6 +997,62 @@ function pmGalleryGo(delta){
 
 document.getElementById('pmGalleryPrev').addEventListener('click', () => pmGalleryGo(-1));
 document.getElementById('pmGalleryNext').addEventListener('click', () => pmGalleryGo(1));
+
+/* ---------- IMAGE LIGHTBOX (zoom + swipe) ---------- */
+let currentModalImages = [];
+let lightboxIndex = 0;
+let lightboxTouchStartX = null;
+
+function openLightbox(images, startIndex){
+  if(!images || images.length === 0) return;
+  lightboxIndex = startIndex || 0;
+  const track = document.getElementById('lightboxTrack');
+  const dots = document.getElementById('lightboxDots');
+  track.innerHTML = images.map(img => `<div class="lightboxSlide"><img src="${img}"></div>`).join('');
+  dots.innerHTML = images.length > 1
+    ? images.map((_, i) => `<button data-i="${i}" class="${i === lightboxIndex ? 'active' : ''}"></button>`).join('')
+    : '';
+  dots.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => { lightboxIndex = parseInt(btn.dataset.i); updateLightbox(); });
+  });
+  document.getElementById('lightboxPrev').style.display = images.length > 1 ? 'flex' : 'none';
+  document.getElementById('lightboxNext').style.display = images.length > 1 ? 'flex' : 'none';
+  updateLightbox();
+  document.getElementById('imageLightbox').classList.add('open');
+}
+
+function updateLightbox(){
+  const track = document.getElementById('lightboxTrack');
+  if(!track) return;
+  track.style.transform = `translateX(-${lightboxIndex * 100}%)`;
+  document.querySelectorAll('#lightboxDots button').forEach((d, i) => d.classList.toggle('active', i === lightboxIndex));
+}
+
+function lightboxGo(delta){
+  const count = currentModalImages.length;
+  if(count === 0) return;
+  lightboxIndex = (lightboxIndex + delta + count) % count;
+  updateLightbox();
+}
+
+document.getElementById('lightboxPrev').addEventListener('click', () => lightboxGo(-1));
+document.getElementById('lightboxNext').addEventListener('click', () => lightboxGo(1));
+document.getElementById('lightboxClose').addEventListener('click', () => {
+  document.getElementById('imageLightbox').classList.remove('open');
+});
+document.getElementById('imageLightbox').addEventListener('click', (e) => {
+  if(e.target.id === 'imageLightbox') document.getElementById('imageLightbox').classList.remove('open');
+});
+document.getElementById('lightboxTrack').addEventListener('touchstart', (e) => {
+  lightboxTouchStartX = e.touches[0].clientX;
+}, { passive: true });
+document.getElementById('lightboxTrack').addEventListener('touchend', (e) => {
+  if(lightboxTouchStartX === null) return;
+  const delta = e.changedTouches[0].clientX - lightboxTouchStartX;
+  if(Math.abs(delta) > 40) lightboxGo(delta > 0 ? -1 : 1);
+  lightboxTouchStartX = null;
+}, { passive: true });
+
 document.getElementById('productModalClose').addEventListener('click', () => {
   document.getElementById('productModal').classList.remove('open');
   activeProductId = null;
@@ -1386,24 +1522,51 @@ function renderOrdersList(orders){
     el.innerHTML = '<p style="color:#9c9a92;font-size:13px;">No hay pedidos todavía.</p>';
     return;
   }
-  el.innerHTML = orders.map(o => {
+  const pending = orders.filter(o => o.status !== 'completado');
+  const done = orders.filter(o => o.status === 'completado');
+
+  function rowHTML(o){
     const itemsTxt = (o.items || []).map(it => `${it.qty}× ${it.name}${it.flavor ? ' ('+it.flavor+')' : ''}`).join(', ');
     const when = o.createdAt && o.createdAt.toDate ? o.createdAt.toDate().toLocaleString('es-PA') : '';
+    const isPending = o.status !== 'completado';
     return `
-      <div class="orderRow">
-        <div class="oTop"><span>${o.customerName}</span><span>$${(o.total || 0).toFixed(2)}</span></div>
+      <div class="orderRow ${isPending ? 'pending' : ''}">
+        <div class="oTop">
+          <span>${o.customerName}${isPending ? '<span class="orderPendingBadge">Pendiente</span>' : '<span class="orderDoneBadge">Realizado</span>'}</span>
+          <span>$${(o.total || 0).toFixed(2)}</span>
+        </div>
         <div class="oMeta">
           Tel. ${o.phone} · Pago: ${o.paymentMethod} · ${o.delivery ? 'Delivery: ' + (o.address || '') : 'Retiro'}<br>
           ${itemsTxt}<br>
           <span style="color:var(--text-3);">${when}</span>
         </div>
-        <div class="oActions"><button class="orderDetailBtn" data-order-id="${o.id}">Ver detalle completo</button></div>
+        <div class="oActions">
+          ${isPending ? `<button class="orderDetailBtn btnMarkDone" data-done-id="${o.id}">✓ Pedido realizado</button>` : ''}
+          <button class="orderDetailBtn" data-order-id="${o.id}">Ver detalle completo</button>
+        </div>
       </div>
     `;
-  }).join('');
-  el.querySelectorAll('.orderDetailBtn').forEach(btn => {
+  }
+
+  let html = pending.map(rowHTML).join('');
+  if(done.length > 0){
+    html += `<div class="ordersDoneHeader">Pedidos ya realizados</div>` + done.map(rowHTML).join('');
+  }
+  if(pending.length === 0 && done.length > 0){
+    html = `<p style="color:var(--text-2); font-size:12.5px; margin-bottom:10px;">No tienes pedidos pendientes 🎉</p>` + html;
+  }
+  el.innerHTML = html;
+
+  el.querySelectorAll('.orderDetailBtn[data-order-id]').forEach(btn => {
     const order = orders.find(o => o.id === btn.dataset.orderId);
     btn.addEventListener('click', () => openOrderDetail(order));
+  });
+  el.querySelectorAll('[data-done-id]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      try{ await updateDoc(doc(db, 'orders', btn.dataset.doneId), { status: 'completado' }); }
+      catch(err){ alert('No se pudo actualizar el pedido.'); console.error(err); }
+    });
   });
 }
 
@@ -1414,16 +1577,26 @@ function openOrderDetail(order){
   const items = (order.items || []).map(item =>
     `<div>${item.qty} × ${item.name}${item.flavor ? ` — Sabor: ${item.flavor}` : ''} · ${item.price}</div>`
   ).join('');
+  const isPending = order.status !== 'completado';
   document.getElementById('orderDetailContent').innerHTML = `
     <strong>Cliente:</strong> ${order.customerName}<br>
     <strong>Teléfono:</strong> ${order.phone}<br>
     <strong>Entrega:</strong> ${order.delivery ? `Delivery — ${order.address || 'sin dirección'}` : 'Retiro en tienda'}<br>
     <strong>Pago:</strong> ${order.paymentMethod}<br>
-    <strong>Estado:</strong> ${order.status || 'pendiente'}<br>
+    <strong>Estado:</strong> ${isPending ? '<span class="orderPendingBadge">Pendiente</span>' : '<span class="orderDoneBadge">Realizado</span>'}<br>
     <strong>Fecha:</strong> ${when}<hr style="border:0;border-top:1px solid var(--border);margin:12px 0;">
     <strong>Productos:</strong><br>${items || 'Sin productos'}<br>
     <strong>Total: $${(order.total || 0).toFixed(2)}</strong>
+    ${isPending ? `<div style="margin-top:14px; text-align:right;"><button class="orderDetailBtn btnMarkDone" id="btnMarkDoneInModal">✓ Marcar como realizado</button></div>` : ''}
   `;
+  if(isPending){
+    document.getElementById('btnMarkDoneInModal').addEventListener('click', async () => {
+      try{
+        await updateDoc(doc(db, 'orders', order.id), { status: 'completado' });
+        document.getElementById('orderDetailModal').classList.remove('open');
+      }catch(err){ alert('No se pudo actualizar el pedido.'); console.error(err); }
+    });
+  }
   document.getElementById('orderDetailModal').classList.add('open');
   document.getElementById('adminNotice').classList.remove('open');
 }
