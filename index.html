@@ -139,6 +139,7 @@
   .pcard h3{ font-size:16.5px; margin:0 0 6px; font-weight:600; letter-spacing:-0.2px; }
   .pcard .desc{ font-size:13px; color:var(--text-2); flex:1; margin:0 0 16px; }
   .pcard .price{ font-size:18px; font-weight:700; color:var(--accent-2); letter-spacing:-0.3px; }
+  .pcard .oldPrice{ font-size:12px; color:var(--text-3); text-decoration:line-through; margin-left:7px; font-weight:500; }
   .pcard .addBtn{
     margin-top:12px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border);
     background:transparent; color:var(--text); font-size:13px; font-weight:600; cursor:pointer;
@@ -337,6 +338,7 @@
     width:20px; height:20px; border-radius:50%; cursor:pointer; font-size:12px; line-height:1;
   }
   .galleryUploadRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .galleryHint{ font-size:11.5px; color:var(--text-3); margin:8px 0 0; }
 
   footer{
     padding:40px 6vw; border-top:1px solid var(--border-soft); color:var(--text-3); font-size:12px;
@@ -419,6 +421,16 @@
   }
   .adminLoggedBar button:hover{ color:var(--text); border-color:var(--text-3); }
   .syncNote{ font-size:11.5px; color:var(--text-3); margin:-4px 0 14px; }
+  .adminNotice{
+    display:none; align-items:flex-start; gap:10px; padding:12px 14px; margin-bottom:16px;
+    background:rgba(212,175,90,.11); border:1px solid rgba(212,175,90,.38); border-radius:10px;
+    color:var(--text); font-size:12.5px;
+  }
+  .adminNotice.open{ display:flex; }
+  .adminNotice strong{ display:block; color:var(--accent-2); margin-bottom:2px; }
+  .noticeIcon{ color:var(--accent); font-size:17px; line-height:1; }
+  .notifyBtn{ background:transparent; color:var(--accent-2); border:1px solid var(--accent); padding:7px 11px; margin-left:auto; white-space:nowrap; }
+  .notifyBtn:hover{ background:var(--accent-glow); }
 
   /* GENERIC MODAL OVERLAY */
   .modalOverlay{
@@ -456,6 +468,14 @@
   .pmDesc{ color:var(--text-2); font-size:14px; line-height:1.7; white-space:pre-line; margin:0 0 18px; }
   .pmFlavorLabel{ display:block; font-size:12px; color:var(--text-2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
   #pmFlavorBox{ margin-bottom:16px; }
+  .flavorList{ display:flex; flex-direction:column; gap:8px; }
+  .flavorOption{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border);
+    border-radius:8px; background:var(--card); color:var(--text); font-size:13px; cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .flavorOption:hover, .flavorOption.selected{ border-color:var(--accent); background:var(--accent-glow); }
+  .flavorOption input{ accent-color:var(--accent); }
   #pmFlavorSelect{
     width:100%; padding:11px 12px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--text); font-size:14px; font-family:inherit;
@@ -510,6 +530,13 @@
   }
   .orderRow .oTop{ display:flex; justify-content:space-between; font-weight:600; color:var(--text); margin-bottom:4px; }
   .orderRow .oMeta{ color:var(--text-2); line-height:1.6; }
+  .orderRow .oActions{ margin-top:9px; display:flex; justify-content:flex-end; }
+  .orderDetailBtn{ background:transparent !important; color:var(--accent-2); border:1px solid var(--border) !important; padding:6px 10px !important; font-size:11.5px !important; }
+  .orderDetailBtn:hover{ border-color:var(--accent) !important; }
+  .detailBox{ position:relative; background:var(--bg-2); border:1px solid var(--border); border-radius:18px; max-width:520px; width:100%; padding:28px; box-shadow:0 30px 60px rgba(0,0,0,.5); }
+  .detailBox h2{ margin-top:0; font-size:19px; }
+  .detailContent{ background:var(--card); border-radius:10px; padding:14px; color:var(--text-2); font-size:13px; line-height:1.75; }
+  .detailContent strong{ color:var(--text); }
 </style>
 </head>
 <body>
@@ -619,7 +646,15 @@
     <div id="adminManageBox" style="display:none;">
       <div class="adminLoggedBar">
         <span id="adminLoggedEmail">Sesión iniciada</span>
-        <button id="btnAdminLogout">Cerrar sesión</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button id="btnEnableNotifications" class="notifyBtn">Activar avisos</button>
+          <button id="btnAdminLogout">Cerrar sesión</button>
+        </div>
+      </div>
+      <div id="adminNotice" class="adminNotice">
+        <span class="noticeIcon">●</span>
+        <div><strong id="adminNoticeTitle">Nuevo pedido recibido</strong><span id="adminNoticeText"></span></div>
+        <button id="adminNoticeView" class="notifyBtn">Ver detalle</button>
       </div>
       <p class="syncNote">Los cambios se guardan en la nube y aparecen automáticamente en cualquier dispositivo que visite el sitio.</p>
 
@@ -630,11 +665,12 @@
           <option value="E-liquid">E-liquid</option>
           <option value="Accesorio">Accesorio</option>
         </select>
-        <input id="fPrice" placeholder="Precio (ej. $18.00)" />
+        <input id="fPrice" placeholder="Precio de venta (ej. $18.00)" />
+        <input id="fOriginalPrice" placeholder="Precio normal (opcional)" />
         <input id="fIcon" placeholder="Emoji/ícono (si no subes imagen)" />
         <input id="fFlavors" style="grid-column:1/-1;" placeholder="Sabores separados por coma (ej. Menta, Fresa, Uva) — opcional" />
         <label style="grid-column:1/-1; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); cursor:pointer;">
-          <input type="checkbox" id="fOffer" style="width:auto;"> Marcar como oferta (aparece en el carrusel de inicio)
+          <input type="checkbox" id="fOffer" style="width:auto;"> Mostrar también en el carrusel (el descuento se activa automáticamente)
         </label>
         <textarea id="fDesc" placeholder="Descripción corta (aparece en la tarjeta del catálogo)"></textarea>
         <textarea id="fDescLong" placeholder="Descripción larga (aparece al abrir el producto)" style="min-height:80px;"></textarea>
@@ -650,8 +686,9 @@
 
       <h2 style="margin-top:24px;">Galería de presentación</h2>
       <p style="color:var(--text-2); font-size:12.5px; margin-top:-8px;">Sube fotos de producto o ambiente para la carta de presentación de la página (máx. 6).</p>
-      <label class="fileLabel" for="galleryInput" id="galleryLabel" style="display:inline-block; width:auto;">Subir imagen a la galería</label>
-      <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+       <label class="fileLabel" for="galleryInput" id="galleryLabel" style="display:inline-block; width:auto;">Subir imágenes al carrusel</label>
+       <input type="file" id="galleryInput" accept="image/*" multiple style="display:none;">
+       <p class="galleryHint">Puedes seleccionar varias imágenes a la vez. Se mostrarán en el carrusel de inicio en el mismo orden.</p>
       <div class="galleryUploadRow" id="galleryAdminList"></div>
 
       <h2 style="margin-top:24px;">Pedidos recientes</h2>
@@ -681,7 +718,7 @@
       <p class="pmDesc" id="pmDesc"></p>
       <div id="pmFlavorBox">
         <label class="pmFlavorLabel">Sabor</label>
-        <select id="pmFlavorSelect"></select>
+        <div class="flavorList" id="pmFlavorList"></div>
       </div>
       <button class="cta" id="pmAddToCart" style="border:none; cursor:pointer; width:100%; font-family:inherit;">Añadir al carrito</button>
     </div>
@@ -709,6 +746,14 @@
       <button class="btnAdd" id="ckSubmit">Confirmar pedido</button>
       <div class="ckMsg" id="ckMsg"></div>
     </div>
+  </div>
+</div>
+
+<div id="orderDetailModal" class="modalOverlay">
+  <div class="detailBox">
+    <button class="modalCloseBtn" id="orderDetailClose">×</button>
+    <h2>Detalle del pedido</h2>
+    <div class="detailContent" id="orderDetailContent"></div>
   </div>
 </div>
 
@@ -822,6 +867,10 @@ let isAdmin = false;
 let ordersUnsub = null;
 let activeProductId = null;
 let pmGalleryIndex = 0;
+let selectedFlavor = '';
+let latestOrder = null;
+let lastSeenOrderId = null;
+let ordersInitialized = false;
 
 /* ---------- FIRESTORE REALTIME SYNC ---------- */
 onSnapshot(productsCol, (snap) => {
@@ -836,6 +885,7 @@ onSnapshot(productsCol, (snap) => {
 onSnapshot(query(galleryCol, orderBy('createdAt', 'asc')), (snap) => {
   gallery = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderGalleryAdmin();
+  renderGallerySection();
 }, (err) => console.error('Error leyendo galería', err));
 
 /* ---------- AUTH ---------- */
@@ -847,7 +897,13 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById('adminLoggedEmail').textContent = user.email || 'Sesión iniciada';
     if(!ordersUnsub){
       ordersUnsub = onSnapshot(query(ordersCol, orderBy('createdAt', 'desc'), limit(30)), (snap) => {
-        renderOrdersList(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const incomingOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderOrdersList(incomingOrders);
+        if(ordersInitialized && incomingOrders[0] && incomingOrders[0].id !== lastSeenOrderId){
+          showAdminNotification(incomingOrders[0]);
+        }
+        if(incomingOrders[0]) lastSeenOrderId = incomingOrders[0].id;
+        ordersInitialized = true;
       }, (err) => console.error('Error leyendo pedidos', err));
     }
   } else if(ordersUnsub){
@@ -883,6 +939,8 @@ function parsePrice(str){
 
 function productCardHTML(p){
   const img = p.image || (p.images && p.images[0]);
+  const normalPrice = p.originalPrice && parsePrice(p.originalPrice) > parsePrice(p.price)
+    ? `<span class="oldPrice">${p.originalPrice}</span>` : '';
   return `
     <div class="pcard" data-id="${p.id}">
       ${p.isOffer ? '<span class="offerBadge">Oferta</span>' : ''}
@@ -891,7 +949,7 @@ function productCardHTML(p){
         <div class="tag">${p.tag}</div>
         <h3>${p.name}</h3>
         <p class="desc">${p.desc || ''}</p>
-        <div class="price">${p.price}</div>
+        <div class="price">${p.price}${normalPrice}</div>
         <button class="viewBtn" data-id="${p.id}">Ver producto</button>
       </div>
     </div>
@@ -979,21 +1037,36 @@ function openProductModal(id, keepGalleryIndex){
 
   document.getElementById('pmTag').textContent = p.tag;
   document.getElementById('pmName').textContent = p.name;
-  document.getElementById('pmPrice').textContent = p.price;
+   const pmPrice = document.getElementById('pmPrice');
+   pmPrice.innerHTML = p.originalPrice && parsePrice(p.originalPrice) > parsePrice(p.price)
+     ? `${p.price}<span class="oldPrice">${p.originalPrice}</span>` : p.price;
   document.getElementById('pmDesc').textContent = p.descLong || p.desc || '';
 
   const flavorBox = document.getElementById('pmFlavorBox');
-  const flavorSelect = document.getElementById('pmFlavorSelect');
+  const flavorList = document.getElementById('pmFlavorList');
+  selectedFlavor = '';
   if(p.flavors && p.flavors.length){
     flavorBox.style.display = 'block';
-    flavorSelect.innerHTML = p.flavors.map(f => `<option value="${f}">${f}</option>`).join('');
+    selectedFlavor = p.flavors[0];
+    flavorList.innerHTML = p.flavors.map((f, i) => `
+      <label class="flavorOption ${i === 0 ? 'selected' : ''}">
+        <input type="radio" name="pmFlavor" value="${f}" ${i === 0 ? 'checked' : ''}>
+        <span>${f}</span>
+      </label>
+    `).join('');
+    flavorList.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', () => {
+        selectedFlavor = input.value;
+        flavorList.querySelectorAll('.flavorOption').forEach(option => option.classList.toggle('selected', option.contains(input)));
+      });
+    });
   } else {
     flavorBox.style.display = 'none';
-    flavorSelect.innerHTML = '';
+    flavorList.innerHTML = '';
   }
 
   document.getElementById('pmAddToCart').onclick = () => {
-    const flavor = (p.flavors && p.flavors.length) ? flavorSelect.value : null;
+    const flavor = (p.flavors && p.flavors.length) ? selectedFlavor : null;
     addToCart(p.id, flavor);
   };
 
@@ -1275,7 +1348,18 @@ function renderGallerySection(){
   const nextBtn = document.getElementById('carouselNext');
 
   const offers = products.filter(p => p.isOffer && (p.image || (p.images && p.images[0])));
-  const slides = offers.map(p => ({ id: p.id, image: p.image || p.images[0], name: p.name, price: p.price }));
+  const gallerySlides = gallery.map((g, index) => ({
+    id: g.productId || null,
+    image: g.image,
+    name: g.title || 'YZsmoke',
+    price: g.subtitle || 'Descubre nuestra colección',
+    isGallery: true,
+    index
+  }));
+  const offerSlides = offers.map(p => ({
+    id: p.id, image: p.image || p.images[0], name: p.name, price: `Oferta ahora: ${p.price}`, isGallery: false
+  }));
+  const slides = gallerySlides.concat(offerSlides);
 
   if(slides.length === 0){
     track.innerHTML = '';
@@ -1287,7 +1371,7 @@ function renderGallerySection(){
     if(!emptyEl){
       emptyEl = document.createElement('div');
       emptyEl.className = 'galleryEmpty';
-      emptyEl.textContent = 'Marca productos como "oferta" en el panel de administración para mostrarlos aquí.';
+       emptyEl.textContent = 'Sube imágenes al carrusel o baja el precio de un producto para mostrar contenido aquí.';
       viewport.appendChild(emptyEl);
     }
     clearInterval(carouselTimer);
@@ -1299,12 +1383,12 @@ function renderGallerySection(){
   viewport.style.height = '';
 
   track.innerHTML = slides.map((s) => `
-    <div class="carouselSlide" data-id="${s.id}" style="cursor:pointer;">
+     <div class="carouselSlide" data-id="${s.id || ''}" style="cursor:${s.id ? 'pointer' : 'default'};">
       <img src="${s.image}" alt="${s.name}">
       <div class="carouselCaption">
         <h2>${s.name}</h2>
-        <p>Oferta ahora: ${s.price}</p>
-        <a href="#" class="carouselCta" data-id="${s.id}">Ver oferta</a>
+         <p>${s.price}</p>
+         ${s.id ? `<a href="#" class="carouselCta" data-id="${s.id}">Ver oferta</a>` : ''}
       </div>
     </div>
   `).join('');
@@ -1312,7 +1396,7 @@ function renderGallerySection(){
   track.querySelectorAll('.carouselSlide, .carouselCta').forEach(el => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
-      openProductModal(el.dataset.id);
+       if(el.dataset.id) openProductModal(el.dataset.id);
     });
   });
 
@@ -1378,19 +1462,21 @@ function renderGalleryAdmin(){
 }
 
 document.getElementById('galleryInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
+  const files = Array.from(e.target.files || []);
+  if(files.length === 0) return;
   if(!isAdmin){ alert('Inicia sesión como administrador primero.'); e.target.value=''; return; }
-  if(gallery.length >= 6){
+  if(gallery.length + files.length > 6){
     alert('Ya tienes 6 imágenes en la galería. Elimina una para agregar otra.');
     e.target.value = ''; return;
   }
   const label = document.getElementById('galleryLabel');
   const originalText = label.textContent;
-  label.textContent = 'Comprimiendo y subiendo...';
+  label.textContent = `Comprimiendo ${files.length} imagen${files.length > 1 ? 'es' : ''}...`;
   try{
-    const compressed = await compressImage(file);
-    await addDoc(galleryCol, { image: compressed, createdAt: serverTimestamp() });
+    for(const file of files){
+      const compressed = await compressImage(file);
+      await addDoc(galleryCol, { image: compressed, createdAt: serverTimestamp() });
+    }
   }catch(err){
     alert('No se pudo subir la imagen.');
     console.error(err);
@@ -1451,6 +1537,7 @@ function startEdit(id){
   document.getElementById('fName').value = p.name;
   document.getElementById('fTag').value = p.tag;
   document.getElementById('fPrice').value = p.price;
+  document.getElementById('fOriginalPrice').value = p.originalPrice || '';
   document.getElementById('fIcon').value = p.icon || '';
   document.getElementById('fDesc').value = p.desc || '';
   document.getElementById('fDescLong').value = p.descLong || '';
@@ -1469,6 +1556,7 @@ function resetForm(){
   document.getElementById('fName').value = '';
   document.getElementById('fTag').value = 'Dispositivo';
   document.getElementById('fPrice').value = '';
+  document.getElementById('fOriginalPrice').value = '';
   document.getElementById('fIcon').value = '';
   document.getElementById('fDesc').value = '';
   document.getElementById('fDescLong').value = '';
@@ -1494,14 +1582,83 @@ function renderOrdersList(orders){
       <div class="orderRow">
         <div class="oTop"><span>${o.customerName}</span><span>$${(o.total || 0).toFixed(2)}</span></div>
         <div class="oMeta">
-          📞 ${o.phone} · 💳 ${o.paymentMethod} · ${o.delivery ? '🛵 Delivery: ' + (o.address || '') : '🏬 Retiro'}<br>
+           Tel. ${o.phone} · Pago: ${o.paymentMethod} · ${o.delivery ? 'Delivery: ' + (o.address || '') : 'Retiro'}<br>
           ${itemsTxt}<br>
           <span style="color:var(--text-3);">${when}</span>
         </div>
+         <div class="oActions"><button class="orderDetailBtn" data-order-id="${o.id}">Ver detalle completo</button></div>
       </div>
     `;
   }).join('');
+  el.querySelectorAll('.orderDetailBtn').forEach(btn => {
+    const order = orders.find(o => o.id === btn.dataset.orderId);
+    btn.addEventListener('click', () => openOrderDetail(order));
+  });
 }
+
+function openOrderDetail(order){
+  if(!order) return;
+  latestOrder = order;
+  const when = order.createdAt && order.createdAt.toDate ? order.createdAt.toDate().toLocaleString('es-PA') : 'Pendiente de fecha';
+  const items = (order.items || []).map(item =>
+    `<div>${item.qty} × ${item.name}${item.flavor ? ` — Sabor: ${item.flavor}` : ''} · ${item.price}</div>`
+  ).join('');
+  document.getElementById('orderDetailContent').innerHTML = `
+    <strong>Cliente:</strong> ${order.customerName}<br>
+    <strong>Teléfono:</strong> ${order.phone}<br>
+    <strong>Entrega:</strong> ${order.delivery ? `Delivery — ${order.address || 'sin dirección'}` : 'Retiro en tienda'}<br>
+    <strong>Pago:</strong> ${order.paymentMethod}<br>
+    <strong>Estado:</strong> ${order.status || 'pendiente'}<br>
+    <strong>Fecha:</strong> ${when}<hr style="border:0;border-top:1px solid var(--border);margin:12px 0;">
+    <strong>Productos:</strong><br>${items || 'Sin productos'}<br>
+    <strong>Total: $${(order.total || 0).toFixed(2)}</strong>
+  `;
+  document.getElementById('orderDetailModal').classList.add('open');
+  document.getElementById('adminNotice').classList.remove('open');
+}
+
+function showAdminNotification(order){
+  latestOrder = order;
+  const itemCount = (order.items || []).reduce((total, item) => total + (item.qty || 0), 0);
+  const summary = `${order.customerName} · ${itemCount} producto${itemCount === 1 ? '' : 's'} · $${(order.total || 0).toFixed(2)}`;
+  document.getElementById('adminNoticeText').textContent = summary;
+  document.getElementById('adminNotice').classList.add('open');
+
+  if('Notification' in window && Notification.permission === 'granted'){
+    const phoneNotice = new Notification('Nuevo pedido en YZsmoke', {
+      body: `${summary}. Toca para ver el detalle.`,
+      tag: `yzsmoke-order-${order.id}`
+    });
+    phoneNotice.onclick = () => {
+      window.focus();
+      openOrderDetail(order);
+      phoneNotice.close();
+    };
+  }
+}
+
+document.getElementById('btnEnableNotifications').addEventListener('click', async () => {
+  const button = document.getElementById('btnEnableNotifications');
+  if(!('Notification' in window)){
+    button.textContent = 'Avisos no disponibles';
+    return;
+  }
+  const permission = await Notification.requestPermission();
+  if(permission === 'granted'){
+    button.textContent = 'Avisos activados';
+    button.disabled = true;
+  } else {
+    button.textContent = 'Permiso no concedido';
+  }
+});
+
+document.getElementById('adminNoticeView').addEventListener('click', () => openOrderDetail(latestOrder));
+document.getElementById('orderDetailClose').addEventListener('click', () => {
+  document.getElementById('orderDetailModal').classList.remove('open');
+});
+document.getElementById('orderDetailModal').addEventListener('click', (e) => {
+  if(e.target.id === 'orderDetailModal') document.getElementById('orderDetailModal').classList.remove('open');
+});
 
 document.getElementById('gateYes').addEventListener('click', () => {
   document.getElementById('ageGate').style.display = 'none';
@@ -1549,16 +1706,31 @@ document.getElementById('btnAddProduct').addEventListener('click', async () => {
   if(!isAdmin){ alert('Inicia sesión como administrador primero.'); return; }
   const name = document.getElementById('fName').value.trim();
   const tag = document.getElementById('fTag').value;
-  const price = document.getElementById('fPrice').value.trim();
+  const salePriceInput = document.getElementById('fPrice').value.trim();
+  const originalPriceInput = document.getElementById('fOriginalPrice').value.trim();
   const icon = document.getElementById('fIcon').value.trim();
   const desc = document.getElementById('fDesc').value.trim();
   const descLong = document.getElementById('fDescLong').value.trim();
   const flavors = document.getElementById('fFlavors').value.split(',').map(f => f.trim()).filter(Boolean);
-  const isOffer = document.getElementById('fOffer').checked;
-  if(!name || !price){ alert('Completa al menos nombre y precio.'); return; }
+  const manualOffer = document.getElementById('fOffer').checked;
+  if(!name || !salePriceInput){ alert('Completa al menos nombre y precio.'); return; }
+
+  const salePriceValue = parsePrice(salePriceInput);
+  const existingProduct = editingId ? products.find(p => p.id === editingId) : null;
+  const originalPriceValue = parsePrice(originalPriceInput) || (
+    existingProduct ? parsePrice(existingProduct.originalPrice || existingProduct.price) : salePriceValue
+  );
+  if(salePriceValue <= 0){ alert('Ingresa un precio de venta válido.'); return; }
+  if(originalPriceValue > 0 && salePriceValue > originalPriceValue){
+    alert('El precio de venta no puede ser mayor al precio normal.');
+    return;
+  }
+  const isOffer = manualOffer || originalPriceValue > salePriceValue;
+  const price = '$' + salePriceValue.toFixed(2);
+  const originalPrice = isOffer ? '$' + originalPriceValue.toFixed(2) : null;
 
   const data = {
-    name, tag, price, icon, desc, descLong, flavors, isOffer,
+    name, tag, price, originalPrice, icon, desc, descLong, flavors, isOffer,
     images: currentImages,
     image: currentImages[0] || null
   };
