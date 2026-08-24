@@ -822,6 +822,7 @@ onAuthStateChanged(auth, (user) => {
         }
         if(incomingOrders[0]) lastSeenOrderId = incomingOrders[0].id;
         ordersInitialized = true;
+        cleanupOldCompletedOrders(incomingOrders);
       }, (err) => console.error('Error leyendo pedidos', err));
     }
   } else if(ordersUnsub){
@@ -1560,6 +1561,20 @@ function resetForm(){
   document.getElementById('btnCancelEdit').style.display = 'none';
 }
 
+async function cleanupOldCompletedOrders(orders){
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  for(const o of orders){
+    if(o.status !== 'completado') continue;
+    const ts = o.completedAt || o.createdAt;
+    if(!ts || !ts.toDate) continue;
+    if(now - ts.toDate().getTime() > DAY_MS){
+      try{ await deleteDoc(doc(db, 'orders', o.id)); }
+      catch(err){ console.error('No se pudo borrar pedido antiguo', err); }
+    }
+  }
+}
+
 function renderOrdersList(orders){
   const el = document.getElementById('ordersList');
   if(!el) return;
@@ -1609,7 +1624,7 @@ function renderOrdersList(orders){
   el.querySelectorAll('[data-done-id]').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      try{ await updateDoc(doc(db, 'orders', btn.dataset.doneId), { status: 'completado' }); }
+      try{ await updateDoc(doc(db, 'orders', btn.dataset.doneId), { status: 'completado', completedAt: serverTimestamp() }); }
       catch(err){ alert('No se pudo actualizar el pedido.'); console.error(err); }
     });
   });
@@ -1637,7 +1652,7 @@ function openOrderDetail(order){
   if(isPending){
     document.getElementById('btnMarkDoneInModal').addEventListener('click', async () => {
       try{
-        await updateDoc(doc(db, 'orders', order.id), { status: 'completado' });
+        await updateDoc(doc(db, 'orders', order.id), { status: 'completado', completedAt: serverTimestamp() });
         document.getElementById('orderDetailModal').classList.remove('open');
       }catch(err){ alert('No se pudo actualizar el pedido.'); console.error(err); }
     });
