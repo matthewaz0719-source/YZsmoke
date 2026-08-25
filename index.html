@@ -723,18 +723,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 /* ---------- EMAILJS: env\u00eda un correo real cada vez que entra un pedido ---------- */
-const EMAILJS_PUBLIC_KEY = 'TU_PUBLIC_KEY_AQUI';
-const EMAILJS_SERVICE_ID = 'TU_SERVICE_ID_AQUI';
-const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID_AQUI';
-const ADMIN_NOTIFY_EMAIL = 'tucorreo@ejemplo.com';
+const EMAILJS_PUBLIC_KEY = 'F8bm1npqpLlqaDT1O';
+const EMAILJS_SERVICE_ID = 'service_944y9uq';
+const EMAILJS_TEMPLATE_ID = 'template_bfly8i6';
+const ADMIN_NOTIFY_EMAIL = 'matthewaz0719@gmail.com';
+console.log('[YZsmoke] EmailJS SDK cargado?', !!window.emailjs);
 if(window.emailjs && EMAILJS_PUBLIC_KEY !== 'TU_PUBLIC_KEY_AQUI'){
   window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 }
 async function sendOrderEmail(orderData){
-  if(!window.emailjs || EMAILJS_PUBLIC_KEY === 'TU_PUBLIC_KEY_AQUI') return;
+  if(!window.emailjs){
+    console.error('[YZsmoke] EmailJS no se cargo (revisa tu conexion o bloqueadores de anuncios).');
+    return false;
+  }
+  if(EMAILJS_PUBLIC_KEY === 'TU_PUBLIC_KEY_AQUI'){
+    console.error('[YZsmoke] Faltan las credenciales de EmailJS.');
+    return false;
+  }
   const itemsTxt = orderData.items.map(it => `${it.qty}x ${it.name}${it.flavor ? ' ('+it.flavor+')' : ''}`).join(', ');
   try{
-    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    const res = await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: ADMIN_NOTIFY_EMAIL,
       customer_name: orderData.customerName,
       customer_phone: orderData.phone,
@@ -743,8 +751,11 @@ async function sendOrderEmail(orderData){
       order_total: '$' + orderData.total.toFixed(2),
       pickup_location: orderData.pickupLocation || 'Estaci\u00f3n San Miguelito'
     });
+    console.log('[YZsmoke] Correo enviado OK', res);
+    return true;
   }catch(err){
-    console.error('No se pudo enviar el correo de aviso', err);
+    console.error('[YZsmoke] No se pudo enviar el correo de aviso', err);
+    return false;
   }
 }
 const db = getFirestore(app);
@@ -1253,8 +1264,8 @@ document.getElementById('ckSubmit').addEventListener('click', async () => {
   try{
     document.getElementById('ckSubmit').disabled = true;
     await addDoc(ordersCol, orderData);
-    sendOrderEmail(orderData);
-    msg.textContent = '¡Pedido enviado! Nos pondremos en contacto contigo pronto.';
+    const emailOk = await sendOrderEmail(orderData);
+    msg.textContent = '¡Pedido enviado! ' + (emailOk ? '📧 Aviso enviado.' : '⚠️ Aviso por correo no se pudo enviar.');
     msg.className = 'ckMsg ok';
     cart = [];
     renderCart();
@@ -1264,7 +1275,7 @@ document.getElementById('ckSubmit').addEventListener('click', async () => {
       document.getElementById('ckName').value = '';
       document.getElementById('ckPhone').value = '';
       msg.textContent = '';
-    }, 1800);
+    }, 3200);
   }catch(err){
     msg.textContent = 'No se pudo enviar el pedido. Intenta de nuevo.';
     msg.className = 'ckMsg err';
