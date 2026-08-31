@@ -4,24 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YZsmoke — Tienda de vapeadores</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0d'/%3E%3Crect x='1' y='1' width='62' height='62' rx='13' fill='none' stroke='%232a2a2f' stroke-width='1'/%3E%3Ctext x='32' y='44' font-family='Georgia, Times New Roman, serif' font-weight='700' font-size='34' fill='%23c39a4b' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0d'/%3E%3Ctext x='32' y='44' font-family='Georgia, Times New Roman, serif' font-weight='700' font-size='34' fill='%23c39a4b' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0b0b0d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg: #0b0b0d;
     --bg-2: #131316;
-    --card: #1a1a1e;
-    --card-hover: #202024;
-    --border: #26262b;
+    --card: #18181b;
+    --card-hover: #1e1e22;
+    --border: #29292e;
     --border-soft: #1e1e22;
     --text: #f5f4f0;
     --text-2: #9a988f;
     --text-3: #605e57;
-    --accent: #d4af5a;
-    --accent-2: #f0d090;
-    --accent-glow: rgba(212,175,90,0.14);
-    --danger: #e2604a;
+    --accent: #c39a4b;
+    --accent-2: #e6c077;
+    --accent-glow: rgba(195,154,75,0.14);
+    --ember: #c0553a;
+    --danger: #c0553a;
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
@@ -40,8 +44,9 @@
   #cartDrawer, #cartOverlay, #searchOverlay, #adminToggle, #ageGate, .mobileCircleNav {
     position:relative; z-index:1;
   }
-  h1,h2,h3,.logo{ font-family:'Space Grotesk', 'Inter', sans-serif; }
+  h1,h2,h3,.logo{ font-family:'Bricolage Grotesque', 'Inter', sans-serif; font-optical-sizing:auto; }
   a{ color:inherit; }
+  ::selection{ background:var(--accent); color:#1a1204; }
 
   #ageGate{
     position:fixed; inset:0; z-index:999;
@@ -80,40 +85,45 @@
   nav a:hover{ color:var(--text); }
 
   .hero{
-    padding:110px 6vw 80px; text-align:center; position:relative; overflow:hidden;
+    padding:120px 6vw 84px; text-align:center; position:relative; overflow:hidden;
     background: radial-gradient(600px 300px at 50% -10%, var(--accent-glow), transparent 70%), linear-gradient(180deg, var(--bg-2), var(--bg));
   }
-  .hero .eyebrow{ display:inline-block; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:20px; border:1px solid var(--border); padding:6px 16px; border-radius:100px; }
-  .hero h1{ font-size:clamp(34px,5.2vw,56px); margin:0 0 18px; font-weight:700; letter-spacing:-1px; line-height:1.1; }
-  .hero h1 em{ color:var(--accent); font-style:normal; }
-  .hero p{ color:var(--text-2); max-width:520px; margin:0 auto 34px; font-size:16px; }
-  .cta{ display:inline-block; background:var(--accent); color:#1a1204; padding:15px 34px; border-radius:10px; font-weight:600; text-decoration:none; font-size:14.5px; transition:all .18s ease; }
+  .hero .kicker{ display:block; font-size:14px; color:var(--text-2); font-weight:500; margin-bottom:16px; }
+  .hero .kicker strong{ color:var(--accent-2); font-weight:600; }
+  .hero h1{ font-size:clamp(36px,5.4vw,58px); margin:0 auto 20px; max-width:680px; font-weight:600; letter-spacing:-1.2px; line-height:1.06; font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .hero p{ color:var(--text-2); max-width:460px; margin:0 auto 36px; font-size:16px; line-height:1.65; }
+  .cta{ display:inline-block; background:var(--accent); color:#1a1204; padding:15px 34px; border-radius:8px; font-weight:600; text-decoration:none; font-size:14.5px; transition:all .18s ease; }
   .cta:hover{ background:var(--accent-2); transform:translateY(-2px); box-shadow:0 12px 24px var(--accent-glow); }
 
-  .warning-bar{ background:#201810; border-top:1px solid #352712; border-bottom:1px solid #352712; color:#d9b876; text-align:center; font-size:12px; padding:11px 6vw; letter-spacing:.2px; }
+  .warning-bar{ background:#1a1210; border-top:1px solid #2f2015; border-bottom:1px solid #2f2015; color:#c7a878; text-align:center; font-size:12.5px; padding:12px 6vw; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .warning-bar svg{ flex-shrink:0; opacity:.85; }
 
   .section{ padding:80px 6vw; scroll-margin-top:90px; }
-  .section h2{ font-size:28px; margin:0 0 8px; font-weight:700; letter-spacing:-0.5px; }
-  .section .sub{ color:var(--text-2); margin:0 0 40px; font-size:14px; }
+  .section h2{ font-size:29px; margin:0 0 8px; font-weight:600; letter-spacing:-0.6px; font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .section .sub{ color:var(--text-2); margin:0 0 40px; font-size:14.5px; }
   .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:22px; }
   .pcard{ background:var(--card); border:1px solid var(--border-soft); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; transition:transform .2s ease, border-color .2s ease, background .2s ease; cursor:pointer; position:relative; }
   .pcard:hover{ transform:translateY(-4px); border-color:var(--border); background:var(--card-hover); }
   .pcard .img{ height:160px; background:linear-gradient(135deg,#232227,#151417); display:flex; align-items:center; justify-content:center; font-size:40px; color:var(--accent); overflow:hidden; }
   .pcard .img img{ width:100%; height:100%; object-fit:contain; padding:8px; box-sizing:border-box; }
   .pcard .body{ padding:18px; flex:1; display:flex; flex-direction:column; }
-  .pcard .tag{ font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent); margin-bottom:8px; font-weight:600; }
-  .pcard h3{ font-size:16.5px; margin:0 0 6px; font-weight:600; letter-spacing:-0.2px; }
+  .pcard .tag{ font-size:11.5px; color:var(--accent-2); margin-bottom:8px; font-weight:600; }
+  .pcard h3{ font-size:16.5px; margin:0 0 6px; font-weight:600; letter-spacing:-0.2px; font-family:'Bricolage Grotesque','Inter',sans-serif; }
   .pcard .desc{ font-size:13px; color:var(--text-2); flex:1; margin:0 0 16px; }
-  .pcard .price{ font-size:18px; font-weight:700; color:var(--accent-2); letter-spacing:-0.3px; }
+  .pcard .price{ font-size:18px; font-weight:700; color:var(--text); letter-spacing:-0.3px; font-variant-numeric:tabular-nums; }
   .oldPrice{ font-size:12px; color:var(--text-3); text-decoration:line-through; margin-left:7px; font-weight:500; }
   .pmPrice .oldPrice{ font-size:14px; margin-left:10px; }
   .pcard .viewBtn{ margin-top:12px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:600; cursor:pointer; transition:all .15s ease; }
   .pcard .viewBtn:hover{ background:var(--accent); color:#1a1204; border-color:var(--accent); }
-  .offerBadge{ position:absolute; top:10px; left:10px; z-index:2; background:var(--accent); color:#1a1204; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:100px; text-transform:uppercase; letter-spacing:.5px; }
+  .offerBadge{ position:absolute; top:10px; left:10px; z-index:2; background:var(--accent); color:#1a1204; font-size:11px; font-weight:700; padding:4px 11px; border-radius:6px; }
+
+  .monogram{ font-family:'Bricolage Grotesque','Inter',sans-serif; font-size:34px; font-weight:600; color:var(--accent); opacity:.75; }
+  .cartItem .ic .monogram, .searchRow .sIcon .monogram{ font-size:18px; }
+  .existRow .info span .monogram{ font-size:15px; }
 
   .priceFilter{ display:flex; align-items:flex-end; gap:14px; margin-bottom:30px; flex-wrap:wrap; }
   .priceFilterField{ display:flex; flex-direction:column; gap:6px; }
-  .priceFilterField label{ font-size:11.5px; color:var(--text-2); text-transform:uppercase; letter-spacing:.5px; }
+  .priceFilterField label{ font-size:12px; color:var(--text-2); font-weight:500; }
   .priceFilterField input{ width:110px; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:14px; font-family:inherit; transition:border-color .15s; }
   .priceFilterField input:focus{ outline:none; border-color:var(--accent); }
   .priceFilterDash{ color:var(--text-3); padding-bottom:11px; }
@@ -164,7 +174,7 @@
   .searchRow .sImg, .searchRow .sIcon{ width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--card); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
   .searchRow .sInfo{ flex:1; min-width:0; }
   .searchRow .sName{ font-size:13.5px; font-weight:600; margin:0 0 2px; }
-  .searchRow .sTag{ font-size:11.5px; color:var(--accent); text-transform:uppercase; letter-spacing:.5px; }
+  .searchRow .sTag{ font-size:12px; color:var(--accent-2); }
   .searchRow .sPrice{ font-size:13px; color:var(--text-2); font-weight:500; }
 
   .gallerySection{ padding:0; position:relative; }
@@ -174,8 +184,8 @@
   .carouselSlide img{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; image-rendering:auto; }
   .carouselSlide::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,11,13,.1) 0%, rgba(11,11,13,.75) 100%); }
   .carouselCaption{ position:absolute; left:0; right:0; bottom:36px; text-align:center; z-index:2; }
-  .carouselCaption h2{ font-size:clamp(20px,3vw,30px); margin:0 0 4px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
-  .carouselCaption p{ font-size:13px; color:var(--text-2); margin:0 0 16px; letter-spacing:.5px; }
+  .carouselCaption h2{ font-size:clamp(22px,3.2vw,32px); margin:0 0 6px; font-weight:600; letter-spacing:-0.5px; font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .carouselCaption p{ font-size:13.5px; color:var(--text-2); margin:0 0 16px; }
   .carouselCaption a{ display:inline-block; background:var(--accent); color:#1a1204; padding:10px 26px; border-radius:8px; font-weight:600; font-size:13px; text-decoration:none; }
   .carouselDots{ position:absolute; bottom:14px; left:0; right:0; display:flex; justify-content:center; gap:8px; z-index:2; }
   .carouselDots button{ width:7px; height:7px; border-radius:50%; border:none; background:var(--text-3); cursor:pointer; padding:0; transition:background .2s, width .2s; }
@@ -239,6 +249,7 @@
   .pmGallery{ position:relative; width:100%; height:min(46vh, 380px); background:var(--card); overflow:hidden; }
   .pmGalleryTrack{ display:flex; height:100%; transition:transform .4s ease; }
   .pmGallerySlide{ min-width:100%; height:100%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:60px; color:var(--accent); }
+  .pmGallerySlide .monogram{ font-size:56px; }
   .pmGallerySlide img{ width:100%; height:100%; object-fit:cover; }
   .pmGalleryNav{ position:absolute; top:50%; transform:translateY(-50%); z-index:2; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.15); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; }
   .pmGalleryNav.prev{ left:12px; } .pmGalleryNav.next{ right:12px; }
@@ -246,11 +257,16 @@
   .pmGalleryDots button{ width:6px; height:6px; border-radius:50%; border:none; background:rgba(255,255,255,.4); cursor:pointer; padding:0; }
   .pmGalleryDots button.active{ background:var(--accent); width:16px; border-radius:3px; }
   .pmBody{ padding:26px 28px; }
-  .pmTag{ font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent); font-weight:600; margin-bottom:6px; }
-  .pmBody h2{ margin:0 0 8px; font-size:24px; }
-  .pmPrice{ font-size:21px; font-weight:700; color:var(--accent-2); margin-bottom:14px; }
-  .pmDesc{ color:var(--text-2); font-size:14px; line-height:1.7; white-space:pre-line; margin:0 0 18px; }
-  .pmFlavorLabel{ display:block; font-size:12px; color:var(--text-2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+  .pmTag{ font-size:12.5px; color:var(--accent-2); font-weight:600; margin-bottom:6px; }
+  .pmBody h2{ margin:0 0 8px; font-size:25px; font-weight:600; letter-spacing:-0.4px; font-family:'Bricolage Grotesque','Inter',sans-serif; }
+  .pmPrice{ font-size:21px; font-weight:700; color:var(--text); margin-bottom:14px; font-variant-numeric:tabular-nums; }
+  .pmDesc{ color:var(--text-2); font-size:14px; line-height:1.7; white-space:pre-line; margin:0 0 4px; }
+  .pmDescLong{ color:var(--text-2); font-size:14px; line-height:1.7; white-space:pre-line; margin:0; max-height:0; overflow:hidden; opacity:0; transition:max-height .3s ease, opacity .25s ease, margin .3s ease; }
+  .pmDescLong.open{ max-height:600px; opacity:1; margin:8px 0 0; }
+  .pmMoreBtn{ display:inline-flex; align-items:center; gap:5px; background:none; border:none; color:var(--accent-2); font-size:12.5px; font-weight:600; font-family:inherit; cursor:pointer; padding:8px 0 18px; }
+  .pmMoreBtn svg{ transition:transform .2s ease; }
+  .pmMoreBtn.open svg{ transform:rotate(180deg); }
+  .pmFlavorLabel{ display:block; font-size:12.5px; color:var(--text-2); font-weight:500; margin-bottom:6px; }
   #pmFlavorBox{ margin-bottom:16px; }
   .flavorList{ display:flex; flex-direction:column; gap:8px; }
   .flavorOption{ display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--card); color:var(--text); font-size:13px; cursor:pointer; transition:border-color .15s, background .15s; }
@@ -300,7 +316,7 @@
   .detailContent strong{ color:var(--text); }
 
   /* LOGO AS HOME BUTTON */
-  .logoBtn{ background:none; border:none; cursor:pointer; padding:0; font-family:'Space Grotesk','Inter',sans-serif; color:var(--text); -webkit-appearance:none; appearance:none; -webkit-tap-highlight-color:transparent; }
+  .logoBtn{ background:none; border:none; cursor:pointer; padding:0; font-family:'Bricolage Grotesque','Inter',sans-serif; color:var(--text); -webkit-appearance:none; appearance:none; -webkit-tap-highlight-color:transparent; }
 
   /* MOBILE CIRCLE NAV (hidden on desktop) */
   .mobileCircleNav{ display:none; }
@@ -350,7 +366,7 @@
     .cartBtn{ padding:8px 11px; font-size:12px; }
 
     .hero{ padding:50px 5vw 40px; }
-    .hero .eyebrow{ font-size:10.5px; padding:5px 12px; margin-bottom:14px; }
+    .hero .kicker{ font-size:12.5px; margin-bottom:12px; }
     .hero h1{ font-size:clamp(26px,7.5vw,34px); margin-bottom:12px; }
     .hero p{ font-size:14px; margin-bottom:24px; }
     .cta{ padding:13px 26px; font-size:13.5px; }
@@ -446,7 +462,7 @@
       <a href="#catalogo" onclick="showCatalog(); return false;">Catálogo</a>
       <a href="#footer" onclick="scrollToSection('footer'); return false;">Contacto</a>
     </nav>
-    <button class="searchBtn" id="searchOpenBtn" aria-label="Buscar">⌕</button>
+    <button class="searchBtn" id="searchOpenBtn" aria-label="Buscar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="cartBtn" id="cartOpenBtn">
       Carrito <span class="cartCount" id="cartCount">0</span>
     </button>
@@ -455,27 +471,28 @@
 
 <div class="mobileCircleNav" id="mobileCircleNav">
   <button class="circleNavBtn" id="circleOfertas">
-    <span class="circleIcon">🔥</span><span class="circleLabel">Ofertas</span>
+    <span class="circleIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.5 0 2.5-1 2.5-2.5C13.5 12 11 10 11 10s-1 1.5-1 3"/><path d="M12 2c1 3-1 5-2 7-1.5 3 0 5 2 5s4-2 4-4.5c0-1.5-1-2.5-1-2.5s2 1 2 4c0 3-2.5 5.5-5.5 5.5S5 18.5 5 15c0-4 3-6 4-9 .5-1.5 1.5-3 3-4z"/></svg></span><span class="circleLabel">Ofertas</span>
   </button>
   <button class="circleNavBtn" id="circleCatalogo">
-    <span class="circleIcon">🗂️</span><span class="circleLabel">Catálogo</span>
+    <span class="circleIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l2.5-4h13L21 7"/></svg></span><span class="circleLabel">Catálogo</span>
   </button>
   <button class="circleNavBtn" id="circleContacto">
-    <span class="circleIcon">✉️</span><span class="circleLabel">Contacto</span>
+    <span class="circleIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l9 7 9-7"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></span><span class="circleLabel">Contacto</span>
   </button>
 </div>
 
 
 <div id="homeView">
 <section class="hero">
-  <span class="eyebrow">Nueva colección 2026</span>
-  <h1>Diseño, sabor y <em>calidad</em> en cada dispositivo</h1>
-  <p>Una selección curada de vapeadores y e-liquids para adultos que buscan algo distinto.</p>
+  <span class="kicker">YZsmoke · <strong>Panamá</strong></span>
+  <h1>Vapeadores y e-liquids elegidos uno por uno, no apilados por catálogo</h1>
+  <p>Retiro rápido en San Miguelito, precios claros y un catálogo que cambia según lo que realmente vale la pena tener en existencia.</p>
   <a class="cta" href="#catalogo" onclick="showCatalog(); return false;">Ver catálogo</a>
 </section>
 
 <div class="warning-bar">
-  Producto con nicotina — sustancia adictiva. Venta exclusiva para mayores de 18 años. No apto para no fumadores, mujeres embarazadas ni menores.
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-3l-8.18-14.14a2 2 0 0 0-3.42 0z"/></svg>
+  Producto con nicotina, sustancia adictiva. Venta exclusiva para mayores de 18 años. No apto para embarazadas ni menores de edad.
 </div>
 
 <section class="gallerySection" id="ofertas">
@@ -518,10 +535,10 @@
   <h2 style="font-size:18px; margin:0 0 6px; color:var(--text);">Contáctanos</h2>
   <div class="contactLinks">
     <a href="https://instagram.com/yzsmoke.pty" target="_blank" rel="noopener" class="igLink">
-      <span class="igIcon">📷</span> @yzsmoke.pty
+      <span class="igIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></span> @yzsmoke.pty
     </a>
     <a href="https://wa.me/50769544329" target="_blank" rel="noopener" class="igLink">
-      <span class="igIcon">💬</span> +507 6954-4329
+      <span class="igIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21l1.4-4.6A8.5 8.5 0 1 1 8 19.5z"/><path d="M8.5 8.7c.2-.5.5-.5.8-.5h.6c.2 0 .4 0 .6.5s.7 1.7.7 1.9.1.3 0 .5-.2.3-.4.5-.4.4-.5.6-.2.3 0 .6a6.4 6.4 0 0 0 2.8 2.6c.3.1.5.1.6-.1s.7-.8.9-1 .3-.2.6-.1 1.7.8 2 .9.5.2.5.4-.1 1-.6 1.4-1.4 1-2.4.7a8.2 8.2 0 0 1-4.6-3.2c-.6-.7-1.2-1.7-1.3-2.7s.1-1.5.4-2z" fill="currentColor" stroke="none"/></svg></span> +507 6954-4329
     </a>
   </div>
   <div class="legal" style="margin-top:22px;">YZsmoke no vende a menores de edad. La venta y distribución de estos productos está sujeta a la legislación local vigente. Consulta las regulaciones de tu país antes de comprar.</div>
@@ -617,6 +634,11 @@
       <h2 id="pmName"></h2>
       <div class="pmPrice" id="pmPrice"></div>
       <p class="pmDesc" id="pmDesc"></p>
+      <div class="pmDescLong" id="pmDescLong"></div>
+      <button class="pmMoreBtn" id="pmMoreBtn" type="button" style="display:none;">
+        <span id="pmMoreBtnText">Ver más</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="pmMoreBtnIcon"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
       <div id="pmFlavorBox">
         <label class="pmFlavorLabel">Sabor</label>
         <div class="flavorList" id="pmFlavorList"></div>
@@ -646,7 +668,7 @@
       <input id="ckName" placeholder="Nombre completo">
       <input id="ckPhone" type="tel" inputmode="numeric" placeholder="Número de contacto (solo dígitos)">
       <div class="pickupInfo">
-        <strong>📍 Retiro en local — Estación San Miguelito</strong>
+        <strong><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:5px;"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Retiro en local — Estación San Miguelito</strong>
         <ul>
           <li>Martes: 2:00 pm – 6:00 pm</li>
           <li>Viernes: 2:00 pm – 6:00 pm</li>
@@ -654,7 +676,7 @@
         </ul>
       </div>
       <label class="ckDeliveryToggle disabled">
-        <input type="checkbox" id="ckDelivery" style="width:auto;" disabled> Delivery a domicilio — <em>próximamente 🚧</em>
+        <input type="checkbox" id="ckDelivery" style="width:auto;" disabled> Delivery a domicilio — <em>disponible pronto</em>
       </label>
       <input id="ckAddress" placeholder="Dirección de entrega" style="display:none;">
       <div class="ckPaymentRow">
@@ -679,7 +701,7 @@
 <div id="searchOverlay">
   <div class="searchBox">
     <div class="searchInputRow">
-      <span style="color:var(--text-2);">⌕</span>
+      <span style="color:var(--text-2); display:flex;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
       <input type="text" id="searchInput" placeholder="Buscar sabores, dispositivos, accesorios..." autocomplete="off">
       <button class="searchClose" id="searchCloseBtn">×</button>
     </div>
@@ -890,6 +912,14 @@ function parsePrice(str){
   return isNaN(n) ? 0 : n;
 }
 
+// Si el producto no tiene foto, usamos el ícono/emoji que puso el admin;
+// si tampoco hay ícono, mostramos la inicial del nombre en vez de un emoji genérico.
+function productIconHTML(p){
+  if(p && p.icon) return p.icon;
+  const letter = (p && p.name ? p.name.trim().charAt(0) : 'Y').toUpperCase();
+  return `<span class="monogram">${letter}</span>`;
+}
+
 function productCardHTML(p){
   const img = p.image || (p.images && p.images[0]);
   const normalPrice = p.originalPrice && parsePrice(p.originalPrice) > parsePrice(p.price)
@@ -897,7 +927,7 @@ function productCardHTML(p){
   return `
     <div class="pcard" data-id="${p.id}">
       ${p.isOffer ? '<span class="offerBadge">Oferta</span>' : ''}
-      <div class="img">${img ? `<img src="${img}" alt="${p.name}">` : (p.icon || '🧴')}</div>
+      <div class="img">${img ? `<img src="${img}" alt="${p.name}">` : productIconHTML(p)}</div>
       <div class="body">
         <div class="tag">${p.tag}</div>
         <h3>${p.name}</h3>
@@ -989,7 +1019,7 @@ function openProductModal(id, keepGalleryIndex){
   const nextBtn = document.getElementById('pmGalleryNext');
 
   if(images.length === 0){
-    track.innerHTML = `<div class="pmGallerySlide">${p.icon || '🧴'}</div>`;
+    track.innerHTML = `<div class="pmGallerySlide">${productIconHTML(p)}</div>`;
     dots.innerHTML = '';
   } else {
     track.innerHTML = images.map(img => `<div class="pmGallerySlide"><img src="${img}" alt="${p.name}"></div>`).join('');
@@ -1010,7 +1040,24 @@ function openProductModal(id, keepGalleryIndex){
   const pmPrice = document.getElementById('pmPrice');
   pmPrice.innerHTML = p.originalPrice && parsePrice(p.originalPrice) > parsePrice(p.price)
     ? `${p.price}<span class="oldPrice">${p.originalPrice}</span>` : p.price;
-  document.getElementById('pmDesc').textContent = p.descLong || p.desc || '';
+  const shortDesc = (p.desc || '').trim();
+  const longDesc = (p.descLong || '').trim();
+  const pmDescEl = document.getElementById('pmDesc');
+  const pmDescLongEl = document.getElementById('pmDescLong');
+  const pmMoreBtn = document.getElementById('pmMoreBtn');
+  const pmMoreBtnText = document.getElementById('pmMoreBtnText');
+  pmDescEl.textContent = shortDesc || longDesc;
+  pmDescLongEl.textContent = longDesc;
+  pmDescLongEl.classList.remove('open');
+  pmMoreBtn.classList.remove('open');
+  pmMoreBtnText.textContent = 'Ver más';
+  const hasExtra = shortDesc && longDesc && longDesc !== shortDesc;
+  pmMoreBtn.style.display = hasExtra ? 'inline-flex' : 'none';
+  pmMoreBtn.onclick = () => {
+    const isOpen = pmDescLongEl.classList.toggle('open');
+    pmMoreBtn.classList.toggle('open', isOpen);
+    pmMoreBtnText.textContent = isOpen ? 'Ver menos' : 'Ver más';
+  };
 
   const flavorBox = document.getElementById('pmFlavorBox');
   const flavorList = document.getElementById('pmFlavorList');
@@ -1182,7 +1229,7 @@ function renderCart(){
 
   list.innerHTML = cart.map(c => `
     <div class="cartItem">
-      ${c.image ? `<img src="${c.image}">` : `<div class="ic">${c.icon || '🧴'}</div>`}
+      ${c.image ? `<img src="${c.image}">` : `<div class="ic">${productIconHTML(c)}</div>`}
       <div class="ci-info">
         <p class="ci-name">${c.name}</p>
         <p class="ci-price">${c.price} c/u</p>
@@ -1265,7 +1312,7 @@ document.getElementById('ckSubmit').addEventListener('click', async () => {
     document.getElementById('ckSubmit').disabled = true;
     await addDoc(ordersCol, orderData);
     const emailOk = await sendOrderEmail(orderData);
-    msg.textContent = '¡Pedido enviado! ' + (emailOk ? '📧 Aviso enviado.' : '⚠️ Aviso por correo no se pudo enviar.');
+    msg.textContent = emailOk ? 'Pedido enviado. Te contactaremos para coordinar el retiro.' : 'Pedido enviado. No pudimos confirmar el aviso por correo, pero tu pedido quedó registrado.';
     msg.className = 'ckMsg ok';
     cart = [];
     renderCart();
@@ -1312,7 +1359,7 @@ function renderSearchResults(query){
 
   el.innerHTML = matches.map(p => `
     <div class="searchRow" data-id="${p.id}">
-      ${p.image ? `<img class="sImg" src="${p.image}">` : `<div class="sIcon">${p.icon || '🧴'}</div>`}
+      ${p.image ? `<img class="sImg" src="${p.image}">` : `<div class="sIcon">${productIconHTML(p)}</div>`}
       <div class="sInfo">
         <p class="sName">${p.name}</p>
         <span class="sTag">${p.tag}</span>
@@ -1522,7 +1569,7 @@ function renderExistList(){
   el.innerHTML = products.map(p => `
     <div class="existRow">
       <div class="info">
-        ${p.image ? `<img class="thumb" src="${p.image}">` : `<span>${p.icon || '🧴'}</span>`}
+        ${p.image ? `<img class="thumb" src="${p.image}">` : `<span>${productIconHTML(p)}</span>`}
         <span>${p.name} — ${p.price}</span>
       </div>
       <div>
