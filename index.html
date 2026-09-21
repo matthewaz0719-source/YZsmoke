@@ -213,6 +213,7 @@
   .existRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 0; border-bottom:1px solid var(--border-soft); font-size:13px; }
   .existRow .del{ background:var(--danger); color:#fff; padding:7px 12px; font-size:12px; border-radius:7px; border:none; cursor:pointer; }
   .existRow .edit{ background:var(--accent); color:#1a1204; padding:7px 12px; font-size:12px; border-radius:7px; border:none; cursor:pointer; margin-right:6px; }
+  .existRow .stock-toggle{ background:transparent; color:var(--danger); border:1px solid var(--danger); }
   .existRow .info{ display:flex; align-items:center; gap:10px; }
   .existRow .thumb{ width:34px; height:34px; border-radius:8px; object-fit:cover; background:var(--card); }
   .fileLabel{ display:inline-block; padding:9px 16px; border:1px solid var(--border); border-radius:8px; font-size:13px; cursor:pointer; background:var(--card); grid-column:1/-1; transition:border-color .15s; }
@@ -1557,11 +1558,20 @@ function renderExistList(){
         <span>${p.name} — ${p.price}${p.outOfStock ? ' <span class="orderPendingBadge">Agotado</span>' : ''}</span>
       </div>
       <div>
+        <button class="edit stock-toggle" data-id="${p.id}" data-current="${p.outOfStock ? '1' : '0'}">${p.outOfStock ? 'Poner disponible' : 'Marcar agotado'}</button>
         <button class="edit" data-id="${p.id}">Editar</button>
         <button class="del" data-id="${p.id}">Eliminar</button>
       </div>
     </div>
   `).join('');
+  el.querySelectorAll('.stock-toggle').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!isAdmin) return;
+      const newVal = btn.dataset.current !== '1';
+      try{ await updateDoc(doc(db, 'products', btn.dataset.id), { outOfStock: newVal }); }
+      catch(err){ alert('No se pudo actualizar el producto.'); console.error(err); }
+    });
+  });
   el.querySelectorAll('.del').forEach(btn => {
     btn.addEventListener('click', async () => {
       if(!isAdmin) return;
@@ -1569,7 +1579,7 @@ function renderExistList(){
       catch(err){ alert('No se pudo eliminar el producto.'); console.error(err); }
     });
   });
-  el.querySelectorAll('.edit').forEach(btn => {
+  el.querySelectorAll('.edit:not(.stock-toggle)').forEach(btn => {
     btn.addEventListener('click', () => startEdit(btn.dataset.id));
   });
 }
